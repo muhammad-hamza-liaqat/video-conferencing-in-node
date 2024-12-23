@@ -3,14 +3,14 @@ import statusCode from "http-status-codes"
 
 export const validationCatches = (schema) => async (req, res, next) => {
     try {
-        await schema.validate(req.body, { abortEarly: false });
+        await schema.validate(req.body, { abortEarly: true });
         next();
     } catch (error) {
         return res.status(statusCode.BAD_REQUEST).json({
-            errors: error.inner.map((err) => ({
-                path: err.path,
-                message: err.message,
-            })),
+            error: {
+                path: error.path,
+                message: error.message,
+            },
         });
     }
 };

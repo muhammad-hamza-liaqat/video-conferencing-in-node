@@ -7,11 +7,12 @@ const app = express();
 
 import { corsOptions } from "./config/corsSetting.js"
 import { requestLogger } from "./middleware/requestLogger.js";
+import { myRoutes } from "./routes/index.routes.js";
 
 app.use(requestLogger)
 app.use(express.json())
 app.use(cors(corsOptions))
-
+app.use("/", myRoutes)
 
 app.get("/", (req, res) => {
     res.end("home page of nodejs application")
