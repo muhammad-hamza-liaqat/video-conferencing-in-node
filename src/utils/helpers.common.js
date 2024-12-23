@@ -2,12 +2,19 @@ import { HTTPError } from "./response.js";
 import statusCode from "http-status-codes"
 
 export const validationCatches = (schema) => async (req, res, next) => {
-    const { error } = schema.validate(req.body, { abortEarly: true });
-    if (error) {
-        return res.status(statusCode.BAD_REQUEST).json({ error: error.details[0].message });
+    try {
+        await schema.validate(req.body, { abortEarly: false });
+        next();
+    } catch (error) {
+        return res.status(statusCode.BAD_REQUEST).json({
+            errors: error.inner.map((err) => ({
+                path: err.path,
+                message: err.message,
+            })),
+        });
     }
-    next();
 };
+
 
 
 export const catchAsyncErrors = (action) => async (req, res, next) => {
