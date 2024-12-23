@@ -8,12 +8,14 @@ export const validationCatches = (schema) => async (req, res, next) => {
     } catch (error) {
         return res.status(statusCode.BAD_REQUEST).json({
             error: {
-                path: error.path,
+                statusCode: statusCode.BAD_REQUEST,
+                field: error.path,
                 message: error.message,
             },
         });
     }
 };
+
 
 
 
