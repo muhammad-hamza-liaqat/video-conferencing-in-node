@@ -1,23 +1,27 @@
-import dotenv from "dotenv"
-dotenv.config();
-
-import express from "express"
+import express from "express";
 import cors from "cors";
+
+import { corsOptions } from "./config/corsSetting.js";
+import { requestLogger } from "./middleware/requestLogger.js";
+import { PORT } from "./env/variables.js";
+import { indexRoutes } from "./routes/index.routes.js";
+
 const app = express();
 
-import { corsOptions } from "./config/corsSetting.js"
-import { requestLogger } from "./middleware/requestLogger.js";
+app.use(requestLogger);
+app.use(express.json());
+app.use(cors(corsOptions));
 
-app.use(requestLogger)
-app.use(express.json())
-app.use(cors(corsOptions))
-
-
+app.use("/api", indexRoutes);
 app.get("/", (req, res) => {
-    res.end("home page of nodejs application")
-})
+    res.send("Home page of Node.js application");
+});
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Something went wrong!" });
+});
 
-app.listen(process.env.PORT, "127.0.0.1", () => {
-    console.info(`server is running at http://127.0.0.1:${process.env.PORT}`)
-})
+app.listen(PORT, () => {
+    console.info(`Server is running at http://localhost:${PORT}`);
+});
