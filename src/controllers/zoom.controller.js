@@ -12,6 +12,7 @@ export const createMeeting = async (req, res) => {
         "https://api.zoom.us/v2/users/me/meetings",
         {
             topic: topic || "Instant Meeting",
+            // type 1 for instant, type 2 for scheduled meeting
             type: 1,
             password: password || "1122",
             settings: {
